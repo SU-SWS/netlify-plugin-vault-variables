@@ -3,7 +3,7 @@ const fs = require("fs");
 const toml = require("toml");
 const vault = require("node-vault");
 
-export const fetchVaultSecrets = async () => {
+const fetchVaultSecrets = async () => {
   const tomlPath = path.resolve(process.cwd(), 'netlify.toml');
   console.log(`Toml file path: ${tomlPath}`);
 
@@ -37,4 +37,8 @@ export const fetchVaultSecrets = async () => {
   }
   
   return secrets;
+}
+
+module.exports = {
+  fetchVaultSecrets
 }
