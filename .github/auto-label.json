@@ -1,0 +1,9 @@
+{
+  "rules": {
+    "patch": ["package.json"],
+    "frontend": ["*.css", "*.scss", "*.jsx"],
+    "component": ["src/components"],
+    "backend": ["src/*.js"],
+    "ci": [".github"]
+  }
+}
