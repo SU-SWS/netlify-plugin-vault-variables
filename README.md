@@ -8,7 +8,7 @@ For when you want to put your environment variables in the vault.
 2. Create an `.env` file in the root of your project if you don't already have one.
 3. Add the variables `VAULT_ROLE_ID` and `VAULT_SECRET_ID` with the newly created values
 4. Add a new script to your package.json file that executes the `script.js` file
-  eg: `"vault": "node ./plugins/netlify-plugin-vault-variables/script.js",`
+  eg: `"vault": "netlify-plugin-vault-variables",`
 5. Run it with `npm run vault`
 
 On success, you may now change and alter values in `.env` if you need to. To reset, simply remove the values from .env and run the script again.
