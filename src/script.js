@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * Execute the plugin as a script.
  */
