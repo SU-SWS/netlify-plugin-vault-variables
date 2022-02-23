@@ -14,15 +14,15 @@ const build = {
   failBuild: (message) => {
     console.error(message);
     process.exit(1);
-  }
-}
+  },
+};
 
 // Fake method for passing into the plugin part 2.
 const status = {
   show: (message) => {
     console.log(message.summary);
-  }
-}
+  },
+};
 
 /**
  * Run the plugin as a script.
@@ -39,6 +39,7 @@ const main = async () => {
     if (element.package.includes('netlify-plugin-vault-variables')) {
       return true;
     }
+    return false;
   });
 
   // No config???
@@ -57,7 +58,7 @@ const main = async () => {
 
   // Run the plugin.
   onPreBuild(pluginSignature);
-}
+};
 
 // Run.
 main();

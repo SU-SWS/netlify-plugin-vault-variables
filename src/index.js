@@ -31,7 +31,7 @@ module.exports = {
       `Overwrite existing secrets was set to: ${overwrite.toString()}`
     );
 
-    console.log(inputs)
+    console.log(inputs);
 
     // Login credentials config object.
     const credentials = {
@@ -70,6 +70,7 @@ module.exports = {
       if (!process.env[key] || overwrite) {
         console.log(`Adding ${key} to env`);
         secretsToWrite.push(`${key}=${JSON.stringify(secrets[key])}`);
+        /* eslint-disable no-param-reassign */
         netlifyConfig.build.environment[key] = secrets[key];
       }
     });

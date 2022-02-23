@@ -1,0 +1,58 @@
+{  
+  "plugins": [
+    "prettier"
+  ],
+  "extends": [
+    "airbnb",
+    "prettier"
+  ],
+  "overrides": [
+    {
+      "files": ["./src/**/*.{js,jsx}"]
+    }
+  ],
+  "rules": {
+    "jsx-a11y/label-has-associated-control": [ 2, {
+      "components": [ "Label" ],
+      "required": {
+          "some": [ "nesting", "id" ]
+      }
+    }],
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "lf",
+        "semi": true,
+        "singleQuote": true,
+        "tabWidth": 2,
+        "trailingComma": "es5"
+      }
+    ],
+    "space-before-function-paren": 0,
+    "import/prefer-default-export": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/no-cycle": 0,
+    "import/no-unresolved": 0,
+    "no-unused-vars": [
+      "warn",
+      {
+        "vars": "local",
+        "args": "none"
+      }
+    ],
+    "import/export": 0,
+    "func-names": 0,
+    "semi": [1, "always"],
+    "no-console": 0
+  },
+  "env": {
+    "node": true,
+    "browser": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
+  }
+}
