@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 const path = require('path');
 const vaultReq = require('node-vault');
+const { replaceContextualVars } = require('./contextualEnvVars');
 
 /* eslint-disable no-unused-vars */
 module.exports = {
@@ -61,6 +62,9 @@ module.exports = {
         }
       })
     );
+
+    console.log('Setting contextual prefixed env variables...')
+    secrets = replaceContextualVars(secrets);
 
     // Store the secrets to write to the .env file.
     const secretsToWrite = [];
