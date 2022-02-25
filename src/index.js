@@ -63,7 +63,7 @@ module.exports = {
       })
     );
 
-    console.log('Setting contextual prefixed env variables...')
+    console.log('Setting contextual prefixed env variables...');
     secrets = replaceContextualVars(secrets);
 
     // Store the secrets to write to the .env file.
