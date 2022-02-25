@@ -1,5 +1,6 @@
 function replaceContextualVars(variables) {
-  const context = `${process.env.CONTEXT}`.toUpperCase().replace(/-/g, '_');
+  // If context is not set, fall back to "DEV" for local environments. 
+  const context = process.env.CONTEXT ? `${process.env.CONTEXT}`.toUpperCase().replace(/-/g, '_') : 'DEV';
   const branch = `${process.env.BRANCH}`.toUpperCase().replace(/-/g, '_');
 
   let replaced = {};
