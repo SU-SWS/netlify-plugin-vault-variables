@@ -9,7 +9,22 @@ For when you want to put your environment variables in the vault.
 3. Add the variables `VAULT_ROLE_ID` and `VAULT_SECRET_ID` with the newly created values
 4. Add a new script to your package.json file that executes the `script.js` file
   eg: `"vault": "netlify-plugin-vault-variables",`
-5. Run it with `npm run vault`
+5. Add configuration to your netlify.toml to enable this plugin
+  ```
+  # Fetch vault plugin needs to come before any of the contextual environment
+  # variable plugins so they can act on the new vars.
+  [[plugins]]
+    package = "netlify-plugin-vault-variables"
+    [plugins.inputs]
+      # The vault service endpoint
+      endpoint = 'https://vault.example.com'
+      # Order doesn't matter here as these will be fetch asyncronously. Try not to have dupes.
+      secrets = ['secret/data/path/project/folder1', 'secret/data/path/project/folder2']
+      # Set which environment variables to use for the approle login
+      secretId = 'VAULT_SECRET_ID'
+      roleId = 'VAULT_ROLE_ID'
+  ``` 
+6. Run it with `npm run vault`
 
 On success, you may now change and alter values in `.env` if you need to. To reset, simply remove the values from .env and run the script again.
 
