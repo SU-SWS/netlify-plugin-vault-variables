@@ -1,5 +1,5 @@
 function replaceContextualVars(variables) {
-  // If context is not set, fall back to "DEV" for local environments.
+  // If context is not set, fall back to "LOCAL" for local environments.
   const context =
     process.env.NODE_ENV === 'development'
       ? 'LOCAL'
