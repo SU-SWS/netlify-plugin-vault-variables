@@ -19,12 +19,10 @@ Environment variable file: `.env`
 We are no longer using `production` and `development` environment variable files. We use the [netlify-plugin-contextual-env](https://www.npmjs.com/package/netlify-plugin-contextual-env) plugin to support different environments. See below for more.
 
 *Netlify-plugin-contextual-env*
-We use this plugin to set the environment variables in the various different environments. See [the plugin page](https://www.npmjs.com/package/netlify-plugin-contextual-env) for a full set of configuration options. We are use the `prefix` option to separate out the different configuration.
+We have ported this plugin into our package to set the environment variables in the various different environments. See [the plugin page](https://www.npmjs.com/package/netlify-plugin-contextual-env) for a full set of configuration options. We are use the `prefix` option to separate out the different configuration.
 
 ## Contextual Environment Variables in LAMBDA functions
-The contextual-env plugin from Netlify runs on build time and does not provide runtime support for LAMBDA functions. To get those to work we have to add an additional plugin that inlines the values of the environment variables into your LAMBDA functions.
-
-See: [netlify-plugin-inline-functions-env](https://www.npmjs.com/package/netlify-plugin-inline-functions-env)
+This plugin will set contextual variables through Netlify's plugin API and they will be available to LAMBDA functions at runtime. 
 
 Prefix strategy
 A non-prefixed version has to exist in order for the plugin to work. For example, GATSBY_TOKEN has to exist in order for DEPLOY_PREVIEW_GATSBY_TOKEN to work. The non-prefixed version of the environment variable is the default and then overridden with the plugin at build time. The default tokens should all point to the development environments so that branch deployes, dev environments, and build previews all use that token. We then use the `PROD_` prefix to override the production environment builds.
@@ -35,7 +33,7 @@ Netlify should support only a minimal amount of environment variables in their U
 
 The project specific folder eg `secret/data/projects/myProject/stuff`
 
-As environment variables get contextualized through plugins, there is no need to separate out dev/prod variables into separate folders.
+As environment variables get contextualized this plugin, there is no need to separate out dev/prod variables into separate folders.
 
 ## Vault
 
