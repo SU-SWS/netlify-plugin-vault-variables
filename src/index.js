@@ -32,8 +32,6 @@ module.exports = {
       `Overwrite existing secrets was set to: ${overwrite.toString()}`
     );
 
-    console.log(inputs);
-
     // Login credentials config object.
     const credentials = {
       secret_id: process.env[inputs.secretId],
@@ -42,7 +40,6 @@ module.exports = {
 
     try {
       await vault.approleLogin(credentials);
-      console.log('Logged in to Vault Successfully');
     } catch (err) {
       build.failBuild('Failed to authenticate to vault', { err });
     }
@@ -53,10 +50,8 @@ module.exports = {
     await Promise.all(
       inputs.secrets.map(async (vaultPath) => {
         try {
-          console.log(`Fetching secret from ${vaultPath}`);
           const secret = await vault.read(vaultPath);
           secrets = { ...secrets, ...secret.data.data };
-          console.log(`Successfully fetched secret from ${vaultPath}`);
         } catch (err) {
           build.failBuild('Failed to fetch secret paths from vault', { err });
         }
