@@ -4,7 +4,6 @@
   "description": "Use vault as the place to store environment variables.",
   "main": "src/index.js",
   "bin": "src/script.js",
-  "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "NODE_ENV=test eslint \"./src/**/*.{js,jsx,ts,tsx}\"",
