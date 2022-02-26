@@ -33,8 +33,11 @@ On success, you may now change and alter values in `.env` if you need to. To res
 Environment variable file: `.env`  
 We are no longer using `production` and `development` environment variable files. We use the [netlify-plugin-contextual-env](https://www.npmjs.com/package/netlify-plugin-contextual-env) plugin to support different environments. See below for more.
 
-*Netlify-plugin-contextual-env*  
+**Netlify-plugin-contextual-env**  
 We have ported this plugin into our package to set the environment variables in the various different environments. See [the plugin page](https://www.npmjs.com/package/netlify-plugin-contextual-env) for a full set of configuration options. We are use the `prefix` option to separate out the different configuration.
+
+**Local Development Context**
+When developing on your local environment you can use the prefix `LOCAL_` to set contextual environment variables for developers. 
 
 ## Contextual Environment Variables in LAMBDA functions
 This plugin will set contextual variables through Netlify's plugin API and they will be available to LAMBDA functions at runtime. 
