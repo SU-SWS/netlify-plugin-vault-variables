@@ -5,6 +5,8 @@
   "main": "src/index.js",
   "bin": "src/script.js",
   "scripts": {
+    "lint": "eslint \"src/**/*.{js,jsx}\"",
+    "lint:fix": "eslint \"src/**/*.{js,jsx}\" --quiet --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
