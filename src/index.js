@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 const path = require('path');
 const vaultReq = require('node-vault');
+const { replaceContextualVars } = require('./contextualEnvVars');
 
 /* eslint-disable no-unused-vars */
 module.exports = {
@@ -31,8 +32,6 @@ module.exports = {
       `Overwrite existing secrets was set to: ${overwrite.toString()}`
     );
 
-    console.log(inputs)
-
     // Login credentials config object.
     const credentials = {
       secret_id: process.env[inputs.secretId],
@@ -41,7 +40,6 @@ module.exports = {
 
     try {
       await vault.approleLogin(credentials);
-      console.log('Logged in to Vault Successfully');
     } catch (err) {
       build.failBuild('Failed to authenticate to vault', { err });
     }
@@ -52,15 +50,16 @@ module.exports = {
     await Promise.all(
       inputs.secrets.map(async (vaultPath) => {
         try {
-          console.log(`Fetching secret from ${vaultPath}`);
           const secret = await vault.read(vaultPath);
           secrets = { ...secrets, ...secret.data.data };
-          console.log(`Successfully fetched secret from ${vaultPath}`);
         } catch (err) {
           build.failBuild('Failed to fetch secret paths from vault', { err });
         }
       })
     );
+
+    console.log('Setting contextual prefixed env variables...');
+    secrets = replaceContextualVars(secrets);
 
     // Store the secrets to write to the .env file.
     const secretsToWrite = [];
@@ -70,6 +69,7 @@ module.exports = {
       if (!process.env[key] || overwrite) {
         console.log(`Adding ${key} to env`);
         secretsToWrite.push(`${key}=${JSON.stringify(secrets[key])}`);
+        /* eslint-disable no-param-reassign */
         netlifyConfig.build.environment[key] = secrets[key];
       }
     });
