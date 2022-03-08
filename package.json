@@ -17,8 +17,12 @@
   ],
   "author": "Stanford Web Services",
   "license": "GPL-3.0-or-later",
-  "devDependencies": {
+  "dependencies": {
     "dotenv": "^10.0.0",
+    "node-vault": "^0.9.22",
+    "toml": "^3.0.0"
+  },
+  "devDependencies": {
     "eslint": "^7.26.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
@@ -26,8 +30,6 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-promise": "^4.3.1",
-    "node-vault": "^0.9.22",
-    "toml": "^3.0.0"
+    "eslint-plugin-promise": "^4.3.1"
   }
 }
