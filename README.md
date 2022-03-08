@@ -20,7 +20,7 @@ Prerequisite: Enterprise Vault Account
     [plugins.inputs]
       # The vault service endpoint
       endpoint = 'https://vault.example.com'
-      # Order doesn't matter here as these will be fetch asyncronously. Try not to have dupes.
+      # Order doesn't matter here as these will be fetched asyncronously. Try not to have dupes.
       secrets = ['secret/data/path/project/folder1', 'secret/data/path/project/folder2']
       # Set which environment variables to use for the approle login
       secretId = 'VAULT_SECRET_ID'
