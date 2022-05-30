@@ -29,7 +29,6 @@ module.exports = {
     // Overwrite existing secrets.
     const overwrite = process.env.VAULT_OVERWRITE || false;
     const isNetlify = process.env.NETLIFY || false;
-    const isNetlifyDev = process.env.NETLIFY_DEV || false;
 
     console.log(
       `Overwrite existing secrets was set to: ${overwrite.toString()}`
@@ -49,7 +48,6 @@ module.exports = {
 
     let secrets = {};
     console.log("isNetlify: " + isNetlify);
-    console.log("isNetlifyDev: " + isNetlifyDev);
 
     console.log('Fetching vault secrets and adding to env...');
     await Promise.all(
@@ -67,7 +65,7 @@ module.exports = {
 
     // If we are on Netlify pull the secrets that have been added through the UI
     // so that we can contextualize them as well.
-    if (isNetlify || isNetlifyDev) {
+    if (isNetlify) {
       console.log('Adding Netlify Build secrets to secrets array');
       secrets = { ...secrets, ...netlifyConfig.build.environment };
       console.log(secrets);
@@ -85,7 +83,7 @@ module.exports = {
         secretsToWrite.push(`${key}=${JSON.stringify(secrets[key])}`);
       }
 
-      if (isNetlify || isNetlifyDev) {
+      if (isNetlify) {
         console.log(`Adding ${key} to Netlify env`);
 
         /* eslint-disable no-param-reassign */
