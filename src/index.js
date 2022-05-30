@@ -48,7 +48,8 @@ module.exports = {
     }
 
     let secrets = {};
-    console.log(secrets);
+    console.log("isNetlify: " + isNetlify);
+    console.log("isNetlifyDev: " + isNetlifyDev);
 
     console.log('Fetching vault secrets and adding to env...');
     await Promise.all(
