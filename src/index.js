@@ -68,8 +68,6 @@ module.exports = {
     if (isNetlify) {
       console.log('Adding Netlify Build secrets to secrets array');
       secrets = { ...secrets, ...netlifyConfig.build.environment };
-      console.log(secrets);
-      console.log(netlifyConfig.build.environment.keys());
     }
     secrets = replaceContextualVars(secrets);
 
