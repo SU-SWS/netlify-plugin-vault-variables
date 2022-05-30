@@ -67,7 +67,10 @@ module.exports = {
     // If we are on Netlify pull the secrets that have been added through the UI
     // so that we can contextualize them as well.
     if (isNetlify || isNetlifyDev) {
+      console.log('Adding Netlify Build secrets to secrets array');
       secrets = { ...secrets, ...netlifyConfig.build.environment };
+      console.log(secrets);
+      console.log(netlifyConfig.build.environment.keys());
     }
     secrets = replaceContextualVars(secrets);
 
