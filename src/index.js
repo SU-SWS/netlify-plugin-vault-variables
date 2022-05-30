@@ -47,7 +47,6 @@ module.exports = {
     }
 
     let secrets = {};
-    console.log("isNetlify: " + isNetlify);
 
     console.log('Fetching vault secrets and adding to env...');
     await Promise.all(
@@ -83,7 +82,6 @@ module.exports = {
 
       if (isNetlify) {
         console.log(`Adding ${key} to Netlify env`);
-
         /* eslint-disable no-param-reassign */
         netlifyConfig.build.environment[key] = secrets[key];
       }
