@@ -28,6 +28,9 @@ module.exports = {
 
     // Overwrite existing secrets.
     const overwrite = process.env.VAULT_OVERWRITE || false;
+    const isNetlify = process.env.NETLIFY || false;
+    const isNetlifyDev = process.env.NETLIFY_DEV || false;
+
     console.log(
       `Overwrite existing secrets was set to: ${overwrite.toString()}`
     );
@@ -45,6 +48,7 @@ module.exports = {
     }
 
     let secrets = {};
+    console.log(secrets);
 
     console.log('Fetching vault secrets and adding to env...');
     await Promise.all(
@@ -59,6 +63,12 @@ module.exports = {
     );
 
     console.log('Setting contextual prefixed env variables...');
+
+    // If we are on Netlify pull the secrets that have been added through the UI
+    // so that we can contextualize them as well.
+    if (isNetlify || isNetlifyDev) {
+      secrets = { ...secrets, ...netlifyConfig.build.environment };
+    }
     secrets = replaceContextualVars(secrets);
 
     // Store the secrets to write to the .env file.
@@ -66,32 +76,40 @@ module.exports = {
 
     // Create an array of things to write to the env file.
     Object.keys(secrets).forEach((key) => {
-      if (!process.env[key] || overwrite) {
-        console.log(`Adding ${key} to env`);
+      if (!isNetlify && (!process.env[key] || overwrite)) {
+        console.log(`Adding ${key} to env file`);
         secretsToWrite.push(`${key}=${JSON.stringify(secrets[key])}`);
+      }
+
+      if (isNetlify || isNetlifyDev) {
+        console.log(`Adding ${key} to Netlify env`);
+
         /* eslint-disable no-param-reassign */
         netlifyConfig.build.environment[key] = secrets[key];
       }
     });
 
-    let existingSecrets = '';
-    const envFilePath = path.resolve(process.cwd(), '.env');
-    console.log(`Environment file path: ${envFilePath}`);
+    // Only write to .env file if not on Netlify.
+    if (!isNetlify) {
+      let existingSecrets = '';
+      const envFilePath = path.resolve(process.cwd(), '.env');
+      console.log(`Environment file path: ${envFilePath}`);
 
-    // Read existing env file.
-    try {
-      existingSecrets = fs.readFileSync(envFilePath).toString();
-    } catch (err) {
-      // Don't fail when no .env file already
+      // Read existing env file.
+      try {
+        existingSecrets = fs.readFileSync(envFilePath).toString();
+      } catch (err) {
+        // Don't fail when no .env file already
+      }
+
+      // Write new env file.
+      const vaultSecretsString = secretsToWrite.join('\n');
+      const allSecretsString = `${existingSecrets}\n${vaultSecretsString}`;
+      fs.writeFileSync(envFilePath, allSecretsString);
+
+      // Put the new vars back into the env.
+      dotenv.config();
     }
-
-    // Write new env file.
-    const vaultSecretsString = secretsToWrite.join('\n');
-    const allSecretsString = `${existingSecrets}\n${vaultSecretsString}`;
-    fs.writeFileSync(envFilePath, allSecretsString);
-
-    // Put the new vars back into the env.
-    dotenv.config();
 
     // Display success information
     status.show({
