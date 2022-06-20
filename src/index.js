@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 // Please read the comments to learn more about the Netlify Build plugin syntax.
 // Find more information in the Netlify documentation.
 const dotenv = require('dotenv');
@@ -65,9 +66,22 @@ module.exports = {
     // If we are on Netlify pull the secrets that have been added through the UI
     // so that we can contextualize them as well.
     if (isNetlify) {
-      console.log('Adding Netlify Build secrets to secrets array');
       secrets = { ...secrets, ...netlifyConfig.build.environment };
+
+      // Ensure that dotenv gets pushed to the external bundle.
+      if (!Array.isArray(netlifyConfig.functions['*'].external_node_modules)) {
+        netlifyConfig.functions['*'].external_node_modules = [];
+      }
+      netlifyConfig.functions['*'].external_node_modules.push('dotenv');
+
+      // Ensure that the .env file we are writing gets bundled with the func.
+      if (!Array.isArray(netlifyConfig.functions['*'].included_files)) {
+        netlifyConfig.functions['*'].included_files = [];
+      }
+      netlifyConfig.functions['*'].included_files.push('.env');
     }
+
+    // Contextualize the secrets.
     secrets = replaceContextualVars(secrets);
 
     // Store the secrets to write to the .env file.
@@ -75,43 +89,44 @@ module.exports = {
 
     // Create an array of things to write to the env file.
     Object.keys(secrets).forEach((key) => {
-      if (!isNetlify && (!process.env[key] || overwrite)) {
-        console.log(`Adding ${key} to env file`);
+      if (!process.env[key] || overwrite) {
         secretsToWrite.push(`${key}=${JSON.stringify(secrets[key])}`);
       }
 
       if (isNetlify) {
-        console.log(`Adding ${key} to Netlify env`);
-        /* eslint-disable no-param-reassign */
         netlifyConfig.build.environment[key] = secrets[key];
       }
     });
 
-    // Only write to .env file if not on Netlify.
-    if (!isNetlify) {
-      let existingSecrets = '';
-      const envFilePath = path.resolve(process.cwd(), '.env');
-      console.log(`Environment file path: ${envFilePath}`);
+    let existingSecrets = '';
+    const envFilePath = path.resolve(process.cwd(), '.env');
 
-      // Read existing env file.
-      try {
-        existingSecrets = fs.readFileSync(envFilePath).toString();
-      } catch (err) {
-        // Don't fail when no .env file already
-      }
-
-      // Write new env file.
-      const vaultSecretsString = secretsToWrite.join('\n');
-      const allSecretsString = `${existingSecrets}\n${vaultSecretsString}`;
-      fs.writeFileSync(envFilePath, allSecretsString);
-
-      // Put the new vars back into the env.
-      dotenv.config();
+    // Read existing env file.
+    try {
+      existingSecrets = fs.readFileSync(envFilePath).toString();
+    } catch (err) {
+      // Don't fail when no .env file already
     }
+
+    // Write new env file.
+    const vaultSecretsString = secretsToWrite.join('\n');
+    const allSecretsString = `${existingSecrets}\n${vaultSecretsString}`;
+    fs.writeFileSync(envFilePath, allSecretsString);
+
+    // Put the new vars back into the env.
+    dotenv.config();
 
     // Display success information
     status.show({
-      summary: `Added environment variables from vault to .env`,
+      summary: `Added environment variables from vault to environment and LAMBDA`,
     });
+  },
+  // Remove env file if on Netilfy.
+  async onPostBuild() {
+    const isNetlify = process.env.NETLIFY || false;
+    const envFilePath = path.resolve(process.cwd(), '.env');
+    if (isNetlify) {
+      fs.unlinkSync(envFilePath);
+    }
   },
 };
