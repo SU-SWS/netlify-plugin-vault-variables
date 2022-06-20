@@ -42,7 +42,7 @@ We have ported this plugin into our package to set the environment variables in 
 When developing on your local environment you can use the prefix `LOCAL_` to set contextual environment variables for developers.
 
 ## Contextual Environment Variables in LAMBDA functions
-This plugin will set contextual variables through Netlify's plugin API and they will be available to LAMBDA functions at runtime.
+This plugin will add contextual variables through Netlify's plugin API and they will be available to LAMBDA functions at runtime through an .env file. You will need to ensure that your LAMBDA function sets the environment by calling something like `require('dotenv').config()` at the top of your file if you are using a commonjs file. For modules follow https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import.
 
 Prefix strategy
 A non-prefixed version has to exist in order for the plugin to work. For example, GATSBY_TOKEN has to exist in order for DEPLOY_PREVIEW_GATSBY_TOKEN to work. The non-prefixed version of the environment variable is the default and then overridden with the plugin at build time. The default tokens should all point to the development environments so that branch deployes, dev environments, and build previews all use that token. We then use the `PROD_` prefix to override the production environment builds.
