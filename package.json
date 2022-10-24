@@ -18,7 +18,7 @@
   "author": "Stanford Web Services",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.0.3",
     "node-vault": "^0.9.22",
     "toml": "^3.0.0"
   },
