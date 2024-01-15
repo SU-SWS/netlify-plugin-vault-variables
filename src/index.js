@@ -61,22 +61,6 @@ module.exports = {
       })
     );
 
-    console.log('NETLIFY CONFIG', ' ------------------------------------------------------------- ');
-    console.log(netlifyConfig);
-    console.log('NETLIFY CONFIG END', ' ------------------------------------------------------------- ');
-
-    console.log('EDGE CONFIG', ' ------------------------------------------------------------- ');
-    console.log(netlifyConfig.edge_functions);
-    console.log('EDGE CONFIG END', ' ------------------------------------------------------------- ');
-
-    console.log('BUILD EDGE CONFIG', ' ------------------------------------------------------------- ');
-    console.log(netlifyConfig.build.edge_functions);
-    console.log('BUILD EDGE CONFIG END', ' ------------------------------------------------------------- ');
-
-    console.log('BUILD ENV', ' ------------------------------------------------------------- ');
-    console.log(netlifyConfig.build.environment);
-    console.log('BUILD ENV END', ' ------------------------------------------------------------- ');
-
     console.log('Setting contextual prefixed env variables...');
 
     // If we are on Netlify pull the secrets that have been added through the UI
@@ -92,6 +76,13 @@ module.exports = {
 
       // Ensure that the .env file we are writing gets bundled with the func.
       if (!Array.isArray(netlifyConfig.functions['*'].included_files)) {
+        netlifyConfig.functions['*'].included_files = [];
+      }
+      netlifyConfig.functions['*'].included_files.push('.env');
+
+      // EDGE FUNCTIONS
+      // Ensure that the .env file we are writing gets bundled with the func.
+      if (!Array.isArray(netlifyConfig.edge_functions['*'].included_files)) {
         netlifyConfig.functions['*'].included_files = [];
       }
       netlifyConfig.functions['*'].included_files.push('.env');
@@ -131,6 +122,24 @@ module.exports = {
 
     // Put the new vars back into the env.
     dotenv.config();
+
+    console.log('NETLIFY CONFIG', ' ------------------------------------------------------------- ');
+    console.log(netlifyConfig);
+    console.log('NETLIFY CONFIG END', ' ------------------------------------------------------------- ');
+
+    console.log('EDGE CONFIG', ' ------------------------------------------------------------- ');
+    console.log(netlifyConfig.edge_functions);
+    console.log('EDGE CONFIG END', ' ------------------------------------------------------------- ');
+
+    console.log('BUILD EDGE CONFIG', ' ------------------------------------------------------------- ');
+    console.log(netlifyConfig.build.edge_functions);
+    console.log('BUILD EDGE CONFIG END', ' ------------------------------------------------------------- ');
+
+    console.log('BUILD ENV', ' ------------------------------------------------------------- ');
+    console.log(netlifyConfig.build.environment);
+    console.log('BUILD ENV END', ' ------------------------------------------------------------- ');
+
+
 
     // Display success information
     status.show({
