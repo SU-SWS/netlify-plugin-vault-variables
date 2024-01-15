@@ -82,7 +82,7 @@ module.exports = {
 
       // EDGE FUNCTIONS
       // Ensure that the .env file we are writing gets bundled with the func.
-      if (!Array.isArray(netlifyConfig.edge_functions['*'].included_files)) {
+      if (!Array.isArray(netlifyConfig?.edge_functions?.['*']?.included_files)) {
         netlifyConfig.functions['*'].included_files = [];
       }
       netlifyConfig.functions['*'].included_files.push('.env');
