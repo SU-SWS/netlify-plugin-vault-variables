@@ -6,8 +6,8 @@
   "bin": "src/script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "NODE_ENV=test eslint \"./src/**/*.{js,jsx,ts,tsx}\"",
-    "lint:fix": "NODE_ENV=test eslint \"./src/**/*.{js,jsx,ts,tsx}\" --fix"
+    "lint": "NODE_ENV=test eslint \"./src/**/*.{js,ts}\"",
+    "lint:fix": "NODE_ENV=test eslint \"./src/**/*.{js,ts}\" --fix"
   },
   "keywords": [
     "netlify",
@@ -23,12 +23,8 @@
     "toml": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^7.26.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-config-standard": "^16.0.2",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^4.2.1"
+    "eslint-config-prettier": "^5.1.0",
+    "eslint-plugin-prettier": "^5.0.0"
   }
 }
