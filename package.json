@@ -19,7 +19,7 @@
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "dotenv": "^16.0.3",
-    "node-vault": "^0.9.22",
+    "node-vault": "^0.10.0",
     "toml": "^3.0.0"
   },
   "devDependencies": {
