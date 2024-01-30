@@ -1,4 +1,4 @@
-{  
+{
   "plugins": [
     "prettier"
   ],
@@ -8,7 +8,7 @@
   ],
   "overrides": [
     {
-      "files": ["./src/**/*.{js,jsx}"]
+      "files": ["./src/**/*.{js,ts}"]
     }
   ],
   "rules": {
@@ -52,7 +52,8 @@
   "parserOptions": {
     "ecmaVersion": 2020,
     "ecmaFeatures": {
-      "legacyDecorators": true
+      "legacyDecorators": true,
+      "jsx": false
     }
   }
 }
