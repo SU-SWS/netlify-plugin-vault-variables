@@ -9,7 +9,7 @@ const { replaceContextualVars } = require('./contextualEnvVars');
 
 /* eslint-disable no-unused-vars */
 module.exports = {
-  onBuild: async ({
+  onPreBuild: async ({
     inputs,
     // Core utilities
     utils: { build, status },
