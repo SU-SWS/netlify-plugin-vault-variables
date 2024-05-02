@@ -125,7 +125,7 @@ module.exports = {
   async onEnd() {
     const isNetlify = process.env.NETLIFY || false;
     const envFilePath = path.resolve(process.cwd(), '.env');
-    if (isNetlify) {
+    if (isNetlify && fs.existsSync(envFilePath)) {
       fs.unlinkSync(envFilePath);
     }
   },
