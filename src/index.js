@@ -73,12 +73,6 @@ module.exports = {
         netlifyConfig.functions['*'].external_node_modules = [];
       }
       netlifyConfig.functions['*'].external_node_modules.push('dotenv');
-
-      // Ensure that the .env file we are writing gets bundled with the func.
-      if (!Array.isArray(netlifyConfig.functions['*'].included_files)) {
-        netlifyConfig.functions['*'].included_files = [];
-      }
-      netlifyConfig.functions['*'].included_files.push('.env');
     }
 
     // Contextualize the secrets.
@@ -120,13 +114,5 @@ module.exports = {
     status.show({
       summary: `Added environment variables from vault to environment and LAMBDA`,
     });
-  },
-  // Remove env file if on Netilfy.
-  async onPostBuild() {
-    const isNetlify = process.env.NETLIFY || false;
-    const envFilePath = path.resolve(process.cwd(), '.env');
-    if (isNetlify) {
-      fs.unlinkSync(envFilePath);
-    }
   },
 };
