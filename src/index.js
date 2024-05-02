@@ -9,12 +9,12 @@ const { replaceContextualVars } = require('./contextualEnvVars');
 
 /* eslint-disable no-unused-vars */
 module.exports = {
-  async onPreBuild({
+  onPreBuild: async ({
     inputs,
     // Core utilities
     utils: { build, status },
     netlifyConfig,
-  }) {
+  }) => {
     // Vault client config options.
     const options = {
       apiVersion: 'v1',
@@ -32,7 +32,7 @@ module.exports = {
     const isNetlify = process.env.NETLIFY || false;
 
     console.log(
-      `Overwrite existing secrets was set to: ${overwrite.toString()}`
+      `Overwrite existing secrets was set to: ${overwrite.toString()}`,
     );
 
     // Login credentials config object.
@@ -58,7 +58,7 @@ module.exports = {
         } catch (err) {
           build.failBuild('Failed to fetch secret paths from vault', { err });
         }
-      })
+      }),
     );
 
     console.log('Setting contextual prefixed env variables...');
@@ -120,13 +120,5 @@ module.exports = {
     status.show({
       summary: `Added environment variables from vault to environment and LAMBDA`,
     });
-  },
-  // Remove env file if on Netilfy.
-  async onEnd() {
-    const isNetlify = process.env.NETLIFY || false;
-    const envFilePath = path.resolve(process.cwd(), '.env');
-    if (isNetlify && fs.existsSync(envFilePath)) {
-      fs.unlinkSync(envFilePath);
-    }
   },
 };
