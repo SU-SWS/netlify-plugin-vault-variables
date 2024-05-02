@@ -122,7 +122,7 @@ module.exports = {
     });
   },
   // Remove env file if on Netilfy.
-  async onPostBuild() {
+  async onEnd() {
     const isNetlify = process.env.NETLIFY || false;
     const envFilePath = path.resolve(process.cwd(), '.env');
     if (isNetlify) {
