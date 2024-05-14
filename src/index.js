@@ -112,7 +112,7 @@ module.exports = {
 
     // Display success information
     status.show({
-      summary: `Added environment variables from vault to environment and LAMBDA`,
+      summary: `Added ${secretsToWrite.length} environment variables from vault to this build.`,
     });
   },
 };
