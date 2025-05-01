@@ -25,6 +25,8 @@ Prerequisite: Enterprise Vault Account
       # Set which environment variables to use for the approle login
       secretId = 'VAULT_SECRET_ID'
       roleId = 'VAULT_ROLE_ID'
+      # Set to true if you want to add the context to the .env file for runtime.
+      addContext = true
   ```
 6. Run it with `npm run vault`
 
