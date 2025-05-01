@@ -80,6 +80,7 @@ module.exports = {
 
     // Store the secrets to write to the .env file.
     // Add the context var so we can access it during runtime using dotenv.
+    console.log("Adding CONTEXT to the .env file", process.env.CONTEXT);
     const secretsToWrite = [
       `CONTEXT=${process.env.CONTEXT}`
     ];
