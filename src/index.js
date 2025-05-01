@@ -79,7 +79,10 @@ module.exports = {
     secrets = replaceContextualVars(secrets);
 
     // Store the secrets to write to the .env file.
-    const secretsToWrite = [];
+    // Add the context var so we can access it during runtime using dotenv.
+    const secretsToWrite = [
+      `CONTEXT=${process.env.CONTEXT}`
+    ];
 
     // Create an array of things to write to the env file.
     Object.keys(secrets).forEach((key) => {
