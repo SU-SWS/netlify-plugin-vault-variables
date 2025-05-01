@@ -15,3 +15,7 @@ inputs:
   - name: roleId
     description: Vault role ID for approle login
     required: true
+  - name: addContext
+    description: Whether to add the CONTEXT var to the .env file
+    required: false
+    default: 'false'
