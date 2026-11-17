@@ -32,6 +32,23 @@ Prerequisite: Enterprise Vault Account
 
 On success, you may now change and alter values in `.env` if you need to. To reset, simply remove the values from .env and run the script again.
 
+## Troubleshooting
+
+The build log shows which approle logged in and, if something fails, Vault's status code:
+
+```
+Authenticated to vault as "my-role" (policies: default, secret/projects/my-project/viewer) using VAULT_ROLE_ID / VAULT_SECRET_ID.
+```
+
+| Message | What to check |
+|---|---|
+| `Missing environment variable(s) for the vault approle login` | The variables named by the `roleId` and `secretId` inputs aren't set in this build. In Netlify, check their scopes and deploy contexts. |
+| `Failed to authenticate ... Vault returned 400` | The role ID or secret ID is wrong, expired, or from a different approle. |
+| `Failed to fetch secret path ... Vault returned 403` | The approle that logged in (named in the message) can't read that path. Check its policies, and that the build uses the credentials you expect. |
+| `Failed to fetch secret path ... Vault returned 404` | Nothing exists at that path. KV v2 paths include `/data/`, e.g. `secret/data/projects/my-project`. |
+
+If it works locally but fails on Netlify, compare the role name in the Netlify build log with the one from `npm run vault`. Different names mean Netlify's credential values differ from your `.env`.
+
 ## Environment Variable Strategy with Vault.
 
 Environment variable file: `.env`
