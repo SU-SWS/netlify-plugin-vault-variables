@@ -7,6 +7,41 @@ const path = require('path');
 const vaultReq = require('node-vault');
 const { replaceContextualVars } = require('./contextualEnvVars');
 
+// Hints for common Vault status codes, shown with the error.
+const LOGIN_HINTS = {
+  400: 'Check that the role ID and secret ID are correct and belong to the same approle.',
+};
+const READ_HINTS = {
+  403: "The approle that logged in isn't allowed to read this path. Check its Vault policies, and check that the build uses the role ID and secret ID you expect.",
+  404: 'No secret exists at this path. KV v2 paths need /data/ after the mount, e.g. secret/data/projects/my-project.',
+};
+
+/**
+ * Describe a node-vault error for the build log.
+ *
+ * Uses only the HTTP status and Vault's own error messages (for example
+ * "permission denied"), never the raw error object, so request details such
+ * as the Vault token can't end up in the log.
+ */
+const describeVaultError = (err, hints = {}) => {
+  const status = err?.response?.statusCode;
+  const vaultErrors = err?.response?.body?.errors;
+  const raw =
+    Array.isArray(vaultErrors) && vaultErrors.length
+      ? vaultErrors.join('\n')
+      : err?.message || String(err);
+  // Vault wraps messages like "1 error occurred:\n\t* permission denied".
+  const detail = raw
+    .replace(/^\d+ errors? occurred:/i, '')
+    .split(/\n|\*/)
+    .map((part) => part.trim())
+    .filter((part) => part && part !== `Status ${status}`)
+    .join('; ');
+  const hint = status && hints[status] ? ` ${hints[status]}` : '';
+  const summary = status ? `Vault returned ${status}` : 'Vault request failed';
+  return `${summary}${detail ? `: ${detail}` : ''}.${hint}`;
+};
+
 /* eslint-disable no-unused-vars */
 module.exports = {
   async onPreBuild({
@@ -35,17 +70,48 @@ module.exports = {
       `Overwrite existing secrets was set to: ${overwrite.toString()}`
     );
 
+    // The roleId and secretId inputs name the environment variables that hold
+    // the approle credentials. Fail early, and say which ones, if they're unset.
+    const missing = [inputs.roleId, inputs.secretId].filter(
+      (name) => !process.env[name]
+    );
+    if (missing.length) {
+      build.failBuild(
+        `Missing environment variable(s) for the vault approle login: ${missing.join(
+          ', '
+        )}. Set them (in Netlify, or in .env locally), or point the roleId and secretId plugin inputs at the right variables.`
+      );
+      return;
+    }
+
     // Login credentials config object.
     const credentials = {
       secret_id: process.env[inputs.secretId],
       role_id: process.env[inputs.roleId],
     };
 
+    let login;
     try {
-      await vault.approleLogin(credentials);
+      login = await vault.approleLogin(credentials);
     } catch (err) {
-      build.failBuild('Failed to authenticate to vault', { err });
+      build.failBuild(
+        `Failed to authenticate to vault at ${inputs.endpoint} with ${
+          inputs.roleId
+        } / ${inputs.secretId}. ${describeVaultError(err, LOGIN_HINTS)}`
+      );
+      return;
     }
+
+    // Log which approle logged in (names only, not secret), so a build that
+    // picked up the wrong credentials is easy to spot.
+    const auth = login?.auth || {};
+    const roleName = auth.metadata?.role_name || 'unknown role';
+    const policies = (auth.token_policies || auth.policies || []).join(', ');
+    console.log(
+      `Authenticated to vault as "${roleName}" (policies: ${
+        policies || 'none'
+      }) using ${inputs.roleId} / ${inputs.secretId}.`
+    );
 
     let secrets = {};
 
@@ -56,7 +122,12 @@ module.exports = {
           const secret = await vault.read(vaultPath);
           secrets = { ...secrets, ...secret.data.data };
         } catch (err) {
-          build.failBuild('Failed to fetch secret paths from vault', { err });
+          build.failBuild(
+            `Failed to fetch secret path "${vaultPath}" from vault as "${roleName}". ${describeVaultError(
+              err,
+              READ_HINTS
+            )}`
+          );
         }
       })
     );
