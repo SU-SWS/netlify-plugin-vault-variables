@@ -1,20 +1,18 @@
 name: Run Eslint
 on: push
+permissions:
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set the correct Node version using nvm
-        shell: bash -l {0}
-        run: nvm install
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
       - name: Install modules
         run: npm ci
-        env:
-          # The following var needs to correspond with what's used in the .npmrc file for fa pro
-          FONTAWESOME_NPM_AUTH_TOKEN: ${{ secrets.FA_NPM_TOKEN }}
       - name: Run ESLint
         run: npm run lint
-        env:
-          # The following var needs to correspond with what's used in the .npmrc file for fa pro
-          FONTAWESOME_NPM_AUTH_TOKEN: ${{ secrets.FA_NPM_TOKEN }}

@@ -17,6 +17,10 @@
   ],
   "author": "Stanford Web Services",
   "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SU-SWS/netlify-plugin-vault-variables.git"
+  },
   "dependencies": {
     "dotenv": "^16.0.3",
     "node-vault": "^0.10.0",
